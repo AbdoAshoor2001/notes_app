@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(brightness: Brightness.dark),
+      theme: ThemeData(brightness: Brightness.dark,),
       home: const NoteView(),
       builder: (context, child) => SafeArea(child: child!),
       debugShowCheckedModeBanner: false,
