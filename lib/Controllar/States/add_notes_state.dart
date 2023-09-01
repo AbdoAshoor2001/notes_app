@@ -14,19 +14,8 @@ class AddNotesFailure extends NotesState {
 
 class GetNoteSuccess extends NotesState {}
 
-class GetNoteFailure extends NotesState {
-  final String errorMessage;
-
-  GetNoteFailure(this.errorMessage);
-}
-
 class NoteUpdatedSuccess extends NotesState {}
 
 class FilterNotesSuccess extends NotesState {}
+
 class ChangeSearchSuccess extends NotesState {}
-
-class FilterNotesFailure extends NotesState {
-  final String eMessage;
-
-  FilterNotesFailure(this.eMessage);
-}

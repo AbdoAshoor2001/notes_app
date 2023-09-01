@@ -44,20 +44,21 @@ class NotesCubit extends Cubit<NotesState> {
     emit(NoteUpdatedSuccess());
   }
 
-  List<Map<String, dynamic>> notesFliter = [];
+  List<Map<String, dynamic>> notesSearch = [];
 
-  void filterNotes({required String input}) {
-    notesFliter = notesDate
+  void searchAboutNotes({required String input}) {
+    notesSearch = notesDate
         .where((element) => element['title']
             .toString()
             .toLowerCase()
-            .startsWith(input.toUpperCase().toLowerCase()))
+            .startsWith(input.toLowerCase()))
         .toList();
     emit(FilterNotesSuccess());
   }
   bool searchOpen =false;
   void changeSearch (){
     searchOpen = ! searchOpen;
+    if( searchOpen == false ) notesSearch.clear();
     emit(ChangeSearchSuccess());
   }
 }

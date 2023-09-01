@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/Controllar/Cubits/add_note_cubit.dart';
 import '../Constants.dart';
 import '../Widgets/add_note_bottom_sheet.dart';
 import '../Widgets/custom_items_note.dart';
 
 class NoteView extends StatelessWidget {
-  const NoteView({Key? key,}) : super(key: key);
+  const NoteView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-     final notesCubit =BlocProvider.of<NotesCubit>(context)..notesDate..notesFliter..searchOpen;
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -30,33 +30,34 @@ class NoteView extends StatelessWidget {
           automaticallyImplyLeading: false,
           backgroundColor: appBarBackgroundColor,
           elevation: 0.0,
-          title: notesCubit.searchOpen
+          title: NotesCubit.get(context).searchOpen
               ? TextField(
-            onChanged: (input) {
-              notesCubit.filterNotes(input: input);
-            },
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Search',
-                hintStyle:
-                TextStyle(color: Colors.white, fontSize: 20)),
-          )
-              : Text(
-            'Notes',
-            style: TextStyle(fontSize: 23),
-          ),
+                  decoration: const InputDecoration(
+                    hintText: 'Search.....',
+                    hintStyle: TextStyle(color: kPrimaryColor, fontSize: 20),
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (input) {
+                    NotesCubit.get(context).searchAboutNotes(input: input);
+                  },
+                )
+              : const Text(
+                  'Notes',
+                  style: TextStyle(fontSize: 23),
+                ),
           actions: [
             Padding(
-              padding: EdgeInsets.only(right: 15),
+              padding: const EdgeInsets.only(right: 15),
               child: GestureDetector(
                   onTap: () {
-                    notesCubit.changeSearch;
+                    NotesCubit.get(context).changeSearch();
                   },
-                  child: Icon(
-                      notesCubit.searchOpen
-                          ? Icons.clear
-                          : Icons.search,
-                      size: 30)),
+                  child: NotesCubit.get(context).searchOpen
+                      ? const Icon(
+                          Icons.clear,
+                          color: kPrimaryColor,
+                        )
+                      : const Icon(Icons.search, size: 30)),
             )
           ],
         ),
@@ -66,9 +67,9 @@ class NoteView extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: NotesCubit.get(context).notesFliter.isEmpty
+                  itemCount: NotesCubit.get(context).notesSearch.isEmpty
                       ? NotesCubit.get(context).notesDate.length
-                      : NotesCubit.get(context).notesFliter.length,
+                      : NotesCubit.get(context).notesSearch.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -76,19 +77,15 @@ class NoteView extends StatelessWidget {
                         index: index,
                         iconOnPressed: () {
                           NotesCubit.get(context).deleteNote(
-                              noteKey: NotesCubit.get(context)
-                                  .notesDate[index]['key']);
+                              noteKey: NotesCubit.get(context).notesDate[index]
+                                  ['key']);
                         },
-                        title: NotesCubit.get(context).notesFliter.isEmpty
-                            ? NotesCubit.get(context).notesDate[index]
-                        ['title']
-                            : NotesCubit.get(context).notesFliter[index]
-                        ['title'],
-                        content: NotesCubit.get(context).notesFliter.isEmpty
-                            ? NotesCubit.get(context).notesDate[index]
-                        ['contant']
-                            : NotesCubit.get(context).notesFliter[index]
-                        ['contant'],
+                        title: NotesCubit.get(context).notesSearch.isEmpty
+                            ? NotesCubit.get(context).notesDate[index]['title']
+                            : NotesCubit.get(context).notesSearch[index]['title'],
+                        content: NotesCubit.get(context).notesSearch.isEmpty
+                            ? NotesCubit.get(context).notesDate[index]['contant']
+                            : NotesCubit.get(context).notesSearch[index]['contant'],
                       ),
                     );
                   },
@@ -97,7 +94,5 @@ class NoteView extends StatelessWidget {
             ],
           ),
         ));
-
-
   }
 }
