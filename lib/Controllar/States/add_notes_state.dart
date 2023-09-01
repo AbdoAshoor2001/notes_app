@@ -1,13 +1,32 @@
 abstract class NotesState {}
 
-class NotesInitial extends NotesState {}
+class AddNotesInitial extends NotesState {}
 
-class NotesLoading extends NotesState {}
+class AddNotesLoading extends NotesState {}
 
-class NotesSuccess extends NotesState {}
+class AddNotesSuccess extends NotesState {}
 
-class NotesFailure extends NotesState {
+class AddNotesFailure extends NotesState {
   final String errMessage;
 
-  NotesFailure(this.errMessage);
+  AddNotesFailure(this.errMessage);
+}
+
+class GetNoteSuccess extends NotesState {}
+
+class GetNoteFailure extends NotesState {
+  final String errorMessage;
+
+  GetNoteFailure(this.errorMessage);
+}
+
+class NoteUpdatedSuccess extends NotesState {}
+
+class FilterNotesSuccess extends NotesState {}
+class ChangeSearchSuccess extends NotesState {}
+
+class FilterNotesFailure extends NotesState {
+  final String eMessage;
+
+  FilterNotesFailure(this.eMessage);
 }

@@ -1,24 +1,63 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_app/Constants.dart';
-import 'package:notes_app/Models/note_model.dart';
-
 import '../States/add_notes_state.dart';
 
-class NotesCubit extends Cubit<NotesState>{
-  NotesCubit(): super(NotesInitial());
+class NotesCubit extends Cubit<NotesState> {
+  NotesCubit() : super(AddNotesInitial());
 
+  static NotesCubit get(context) => BlocProvider.of(context);
+  List<Map<String, dynamic>> notesDate = [];
 
-  addNote(NoteModel note)async {
-    emit(NotesLoading());
-    try{
-      var noteBox =  Hive.box<NoteModel>(kNotesBox);
-      await noteBox.add(note);
-      emit(NotesSuccess());
-    } catch(e){
-      NotesFailure(e.toString());
-
-      }
-    }
-
+  addNote({required String title, required String contant}) async {
+    await noteRef.add({
+      'title': title,
+      'contant': contant,
+    }).then((value) {
+      emit(AddNotesSuccess());
+      getNotes();
+    });
   }
+
+  getNotes() {
+    notesDate = noteRef.keys.map((e) {
+      final currentNote = noteRef.get(e);
+      return {
+        'key': e,
+        'title': currentNote['title'],
+        'contant': currentNote['contant'],
+      };
+    }).toList();
+    emit(GetNoteSuccess());
+    debugPrint('Notes length is ${notesDate.length}');
+  }
+
+  void deleteNote({required int noteKey}) {
+    noteRef.delete(noteKey);
+    getNotes();
+  }
+
+  void updateNotes({required int noteKey}) {
+    noteRef.put(noteKey,
+        {'title': titleControllar.text, 'contant': contantControllar.text});
+    getNotes();
+    emit(NoteUpdatedSuccess());
+  }
+
+  List<Map<String, dynamic>> notesFliter = [];
+
+  void filterNotes({required String input}) {
+    notesFliter = notesDate
+        .where((element) => element['title']
+            .toString()
+            .toLowerCase()
+            .startsWith(input.toUpperCase().toLowerCase()))
+        .toList();
+    emit(FilterNotesSuccess());
+  }
+  bool searchOpen =false;
+  void changeSearch (){
+    searchOpen = ! searchOpen;
+    emit(ChangeSearchSuccess());
+  }
+}
